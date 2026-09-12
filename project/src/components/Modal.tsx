@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+﻿import { useEffect, type ReactNode } from 'react';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -41,7 +41,7 @@ export default function Modal({ open, onClose, children, labelledBy }: ModalProp
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute right-4 top-4 z-20 grid h-9 w-9 place-items-center rounded-lg border border-line bg-white text-ink-soft transition-colors hover:border-indigo-200 hover:text-indigo-500"
+          className="absolute right-4 top-4 z-20 grid h-9 w-9 place-items-center rounded-lg border border-line bg-white text-ink-soft transition-colors hover:border-coral-200 hover:text-coral-500"
         >
           <X className="h-4 w-4" />
         </button>

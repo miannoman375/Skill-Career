@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react';
+﻿import { Loader2 } from 'lucide-react';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useReveal } from '@/hooks/useReveal';
 
@@ -13,7 +13,7 @@ export default function StatsBar() {
       <div className="container-page">
         {loading ? (
           <div className="flex justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-indigo-500" />
+            <Loader2 className="h-6 w-6 animate-spin text-coral-500" />
           </div>
         ) : (
           <div

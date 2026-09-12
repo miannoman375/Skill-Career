@@ -49,6 +49,52 @@ const pageHeadingsSchema = new mongoose.Schema({
   about_values_heading: { type: String, default: 'What we will not compromise on' },
   about_cta_heading: { type: String, default: 'Ready to find your path?' },
 
+  // About Us page — mentor cards (name, role, desc, photo) admin se editable
+  about_mentor_1_name: { type: String, default: 'Anjali Mehta' },
+  about_mentor_1_role: { type: String, default: 'Lead Career Coach' },
+  about_mentor_1_desc: {
+    type: String,
+    default: 'Runs our free assessments and one-to-one guidance calls.',
+  },
+  about_mentor_1_photo: {
+    type: String,
+    default:
+      'https://images.pexels.com/photos/38707525/pexels-photo-38707525.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  },
+  about_mentor_2_name: { type: String, default: 'Priya Nair' },
+  about_mentor_2_role: { type: String, default: 'Freelance Mentor' },
+  about_mentor_2_desc: {
+    type: String,
+    default: 'Leads freelance skill sessions and interview prep.',
+  },
+  about_mentor_2_photo: {
+    type: String,
+    default:
+      'https://images.pexels.com/photos/33680700/pexels-photo-33680700.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  },
+  about_mentor_3_name: { type: String, default: 'Rahul Verma' },
+  about_mentor_3_role: { type: String, default: 'Marketing Consultant' },
+  about_mentor_3_desc: {
+    type: String,
+    default: 'Guides small business owners on digital growth.',
+  },
+  about_mentor_3_photo: {
+    type: String,
+    default:
+      'https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  },
+  about_mentor_4_name: { type: String, default: 'Sneha Rao' },
+  about_mentor_4_role: { type: String, default: 'Brand Designer' },
+  about_mentor_4_desc: {
+    type: String,
+    default: 'Teaches design basics and portfolio building for beginners.',
+  },
+  about_mentor_4_photo: {
+    type: String,
+    default:
+      'https://images.pexels.com/photos/7752788/pexels-photo-7752788.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  },
+
   // Career Explainer / Library page
   library_hero_badge: { type: String, default: '45-second explainers' },
   library_hero_heading: { type: String, default: 'Career Explainer Library' },

@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import { apiGet } from '@/lib/api';
+import type { SuccessStory } from '@/types/stories';
 import type {
   SiteContent,
   HeroRow,
@@ -179,10 +180,28 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
       if (seg) next.segments = seg;
       if (tr) next.tracks = tr;
       if (wb) next.webinars = wb;
-      if (st) next.stories = st;
       if (sp) next.steps = sp;
       if (stat) next.stats = stat;
       if (my) next.myths = my;
+      // Site Visitors ka "Submit your story" form admin panel se approve hone ke
+      // baad yahan se public Success Stories page par live ho jata hai.
+      const approvedSubmission = await apiGet<SuccessStory[]>('/success-stories').catch(() => null);
+      if (Array.isArray(approvedSubmission) && approvedSubmission.length > 0) {
+        const submitted: StoryRow[] = approvedSubmission.map((s) => ({
+          id: (s as SuccessStory & { _id?: string })._id ?? s.id ?? '',
+          name: s.name,
+          role: s.track_label,
+          location: s.city,
+          quote: s.quote,
+          outcome: s.outcome,
+          avatar: s.photo_url || (fallback.stories[0]?.avatar ?? ''),
+          sort_order: 0,
+        }));
+        const base = st ?? fallbackContent.stories;
+        next.stories = [...base, ...submitted];
+      } else if (st) {
+        next.stories = st;
+      }
       // Merge onto defaults so any heading not yet returned by an older
       // backend still falls back to its default text instead of blank.
       if (ph) next.pageHeadings = { ...fallbackContent.pageHeadings, ...ph };

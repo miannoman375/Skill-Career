@@ -20,4 +20,20 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Token abhi bhi valid hai ya nahi? Frontend page refresh par yahi check
+// karta hai taake user ko jab tak token valid ho, dobara login na karna pade.
+router.get('/verify', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  if (!token) {
+    return res.status(401).json({ ok: false, message: 'No token provided' });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ ok: true, tokenValid: true });
+  } catch {
+    res.status(401).json({ ok: false, message: 'Invalid or expired token' });
+  }
+});
+
 module.exports = router;

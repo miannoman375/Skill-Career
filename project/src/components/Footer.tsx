@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Youtube } from 'lucide-react';
-import AuthLink from '@/components/AuthLink';
 import { useSiteContent } from '@/hooks/useSiteContent';
 
 // Lucide-react mein official TikTok icon nahi hai (trademark ki wajah se),
@@ -30,14 +29,14 @@ export default function Footer() {
   const socials = socialIcons.filter((s) => footer[s.key]);
 
   return (
-    <footer className="relative overflow-hidden bg-indigo-900">
+    <footer className="relative overflow-hidden bg-indigo-600">
       <div
         aria-hidden
         className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-coral-500/20 blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-indigo-500/30 blur-3xl"
+        className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-white/5 blur-3xl"
       />
 
       <div className="container-page relative py-12 sm:py-16">
@@ -81,20 +80,18 @@ export default function Footer() {
             <div key={col.title}>
               <h3 className="text-sm font-bold text-white">{col.title}</h3>
               <ul className="mt-4 space-y-2.5">
-                {col.links.map((link) => {
-                  const isAuthLink = link.to === '/login' || link.to === '/signup';
-                  const LinkComponent = isAuthLink ? AuthLink : Link;
-                  return (
+                {col.links
+                  .filter((link) => link.to !== '/login' && link.to !== '/signup')
+                  .map((link) => (
                     <li key={link.label}>
-                      <LinkComponent
+                      <Link
                         to={link.to}
                         className="text-sm text-indigo-100/70 transition-colors hover:text-coral-300"
                       >
                         {link.label}
-                      </LinkComponent>
+                      </Link>
                     </li>
-                  );
-                })}
+                  ))}
               </ul>
             </div>
           ))}

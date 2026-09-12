@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -20,10 +20,14 @@ import {
   AlertCircle,
   ExternalLink,
   Link2,
+  Inbox,
+  Check,
 } from 'lucide-react';
-import { API_URL } from '@/lib/api';
+import { API_URL, getAuthHeader, uploadFile, uploadVideo } from '@/lib/api';
+import ImageCropModal from '@/admin/ImageCropModal';
 import { pageHeadings as defaultPageHeadings, footer as defaultFooter } from '@/data/content';
 import { useAdminAuth } from '@/admin/AdminAuthContext';
+import type { SuccessStory } from '@/types/stories';
 import {
   type SiteContent,
   type HeroRow,
@@ -38,7 +42,7 @@ import {
   type FooterRow,
 } from '@/types/content';
 
-type TabId = 'overview' | 'hero' | 'segments' | 'tracks' | 'webinars' | 'stories' | 'steps' | 'stats' | 'myths' | 'headings' | 'footer';
+type TabId = 'overview' | 'hero' | 'segments' | 'tracks' | 'webinars' | 'stories' | 'submissions' | 'steps' | 'stats' | 'myths' | 'headings' | 'footer';
 
 const tabs: { id: TabId; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -48,6 +52,7 @@ const tabs: { id: TabId; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'tracks', label: 'Career Tracks', icon: Briefcase },
   { id: 'webinars', label: 'Webinars', icon: Calendar },
   { id: 'stories', label: 'Success Stories', icon: Footprints },
+  { id: 'submissions', label: 'Story Submissions', icon: Inbox },
   { id: 'steps', label: 'How It Works', icon: Footprints },
   { id: 'stats', label: 'Stats', icon: BarChart3 },
   { id: 'myths', label: 'Myths', icon: Lightbulb },
@@ -86,6 +91,10 @@ const emptyContent: SiteContent = {
     about_mentors_eyebrow: '', about_mentors_heading: '',
     about_values_eyebrow: '', about_values_heading: '',
     about_cta_heading: '',
+    about_mentor_1_name: '', about_mentor_1_role: '', about_mentor_1_desc: '', about_mentor_1_photo: '',
+    about_mentor_2_name: '', about_mentor_2_role: '', about_mentor_2_desc: '', about_mentor_2_photo: '',
+    about_mentor_3_name: '', about_mentor_3_role: '', about_mentor_3_desc: '', about_mentor_3_photo: '',
+    about_mentor_4_name: '', about_mentor_4_role: '', about_mentor_4_desc: '', about_mentor_4_photo: '',
     library_hero_badge: '', library_hero_heading: '',
     library_all_heading: '',
     library_myths_eyebrow: '', library_myths_heading: '',
@@ -101,10 +110,9 @@ const emptyContent: SiteContent = {
 
 // ============ API HELPERS ============
 function authHeaders() {
-  const token = localStorage.getItem('adminToken');
   return {
     'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...getAuthHeader(),
   };
 }
 
@@ -208,11 +216,12 @@ export default function AdminDashboard() {
   const [content, setContent] = useState<SiteContent>(emptyContent);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [pendingSubmissions, setPendingSubmissions] = useState(0);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [hero, seg, tr, wb, st, sp, stat, my, ph, ft] = await Promise.all([
+      const [hero, seg, tr, wb, st, sp, stat, my, ph, ft, sub] = await Promise.all([
         apiFetchOne<HeroRow>('/hero'),
         apiFetchJson<SegmentRow>('/segments'),
         apiFetchJson<TrackRow>('/tracks'),
@@ -223,12 +232,14 @@ export default function AdminDashboard() {
         apiFetchJson<MythRow>('/myths'),
         apiFetchOneSafe<PageHeadingsRow>('/page-headings', defaultPageHeadings as PageHeadingsRow),
         apiFetchOneSafe<FooterRow>('/footer', defaultFooter as FooterRow),
+        apiFetchJson<SuccessStory>('/success-stories/admin'),
       ]);
       setContent({
         hero, segments: seg, tracks: tr, webinars: wb, stories: st, steps: sp, stats: stat, myths: my,
         pageHeadings: ph,
         footer: ft,
       });
+      setPendingSubmissions(sub.filter((s) => !s.approved_for_publish).length);
       setError(null);
     } catch {
       setError('Could not load content. Please try again.');
@@ -252,7 +263,7 @@ export default function AdminDashboard() {
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-canvas">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-coral-500" />
       </div>
     );
   }
@@ -264,6 +275,7 @@ export default function AdminDashboard() {
     tracks: content.tracks.length,
     webinars: content.webinars.length,
     stories: content.stories.length,
+    submissions: pendingSubmissions,
     steps: content.steps.length,
     stats: content.stats.length,
     myths: content.myths.length,
@@ -271,19 +283,19 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-canvas">
-      <header className="sticky top-0 z-40 border-b border-line bg-white">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-indigo-500">
         <div className="container-page flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-indigo-500 text-white">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-white text-indigo-500">
               <LayoutDashboard className="h-5 w-5" />
             </span>
-            <span className="font-display text-lg font-bold text-ink">Admin Dashboard</span>
+            <span className="font-display text-lg font-bold text-white">Admin Dashboard</span>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-indigo-500"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-100/80 transition-colors hover:text-white"
             >
               View site
               <ExternalLink className="h-3.5 w-3.5" />
@@ -291,7 +303,7 @@ export default function AdminDashboard() {
             <button
               type="button"
               onClick={handleSignOut}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-2 text-sm font-semibold text-ink-soft transition-colors hover:border-coral-200 hover:text-coral-500"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 px-3 py-2 text-sm font-semibold text-indigo-100/80 transition-colors hover:border-white/40 hover:text-white"
             >
               <LogOut className="h-4 w-4" />
               Sign out
@@ -320,13 +332,15 @@ export default function AdminDashboard() {
                   >
                     <Icon className="h-4 w-4" />
                     {t.label}
-                    <span
-                      className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                        active ? 'bg-white/20 text-white' : 'bg-canvas-tint text-ink-muted'
-                      }`}
-                    >
-                      {counts[t.id as keyof typeof counts]}
-                    </span>
+                    {counts[t.id as keyof typeof counts] !== undefined && (
+                      <span
+                        className={`ml-auto rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                          active ? 'bg-white/20 text-white' : 'bg-canvas-tint text-ink-muted'
+                        }`}
+                      >
+                        {counts[t.id as keyof typeof counts]}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -343,7 +357,7 @@ export default function AdminDashboard() {
 
             {loading ? (
               <div className="flex justify-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+                <Loader2 className="h-8 w-8 animate-spin text-coral-500" />
               </div>
             ) : tab === 'overview' ? (
               <Overview content={content} onTab={setTab} />
@@ -359,6 +373,8 @@ export default function AdminDashboard() {
               <WebinarsManager items={content.webinars} onChanged={fetchAll} />
             ) : tab === 'stories' ? (
               <StoriesManager items={content.stories} onChanged={fetchAll} />
+            ) : tab === 'submissions' ? (
+              <StorySubmissionsManager onChanged={fetchAll} />
             ) : tab === 'steps' ? (
               <StepsManager items={content.steps} onChanged={fetchAll} />
             ) : tab === 'stats' ? (
@@ -396,7 +412,7 @@ function Overview({
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-ink">Welcome to your admin panel</h1>
+      <h1 className="text-2xl font-bold">Welcome to your admin panel</h1>
       <p className="mt-2 text-ink-soft">
         Edit any content here and it will update on your live home page instantly. Click a section below to start editing.
       </p>
@@ -407,11 +423,11 @@ function Overview({
             key={c.id}
             type="button"
             onClick={() => onTab(c.id)}
-            className="card group p-5 text-left hover:-translate-y-1 hover:border-indigo-200"
+            className="card group p-5 text-left hover:-translate-y-1 hover:border-coral-200"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-ink">{c.label}</h3>
-              <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-sm font-bold text-indigo-500">
+              <h3 className="text-base font-bold">{c.label}</h3>
+              <span className="rounded-full bg-coral-50 px-2.5 py-0.5 text-sm font-bold text-coral-500">
                 {c.count}
               </span>
             </div>
@@ -441,7 +457,7 @@ function SectionHeader({
   return (
     <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold text-ink">{title}</h1>
+        <h1 className="text-2xl font-bold">{title}</h1>
         <p className="mt-1 text-sm text-ink-soft">{subtitle}</p>
       </div>
       <button type="button" onClick={onAdd} className="btn-primary">
@@ -470,7 +486,7 @@ function EditButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="grid h-9 w-9 place-items-center rounded-lg border border-line text-indigo-500 transition-colors hover:bg-indigo-50 hover:border-indigo-200"
+      className="grid h-9 w-9 place-items-center rounded-lg border border-line text-coral-500 transition-colors hover:bg-coral-50 hover:border-coral-200"
       aria-label="Edit"
     >
       <Pencil className="h-4 w-4" />
@@ -497,7 +513,7 @@ function EditorShell({
   return (
     <div className="card mb-5 p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-bold text-ink">{title}</h3>
+        <h3 className="text-lg font-bold">{title}</h3>
         <button
           type="button"
           onClick={onCancel}
@@ -551,21 +567,19 @@ function HeroManager({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [cropOpen, setCropOpen] = useState(false);
+  const [pendingImage, setPendingImage] = useState<File | null>(null);
 
-  const handleImageUpload = async (file: File) => {
+  const handleImageUpload = async (file: File, localPreview: string) => {
+    // Preview turant dikh jaye (crop kiya hua), fir asli upload server par ho
+    setForm((f) => ({ ...f, image_url: localPreview }));
     setUploadingImage(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch(`${API_URL}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Upload failed');
-      setForm((f) => ({ ...f, image_url: data.url }));
+      const url = await uploadFile(file);
+      setForm((f) => ({ ...f, image_url: url }));
     } catch (err) {
       alert('Upload failed: ' + (err instanceof Error ? err.message : ''));
+      setForm((f) => ({ ...f, image_url: item.image_url }));
     } finally {
       setUploadingImage(false);
     }
@@ -606,7 +620,7 @@ function HeroManager({
   return (
     <div>
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-ink">Hero Section</h1>
+        <h1 className="text-2xl font-bold">Hero Section</h1>
         <p className="mt-1 text-sm text-ink-soft">
           Home page ka top banner — headline, subtext, buttons, aur image yahan se edit karein.
         </p>
@@ -652,7 +666,7 @@ function HeroManager({
               className="input"
               value={form.primary_cta_link}
               onChange={(e) => setForm({ ...form, primary_cta_link: e.target.value })}
-              placeholder="/signup"
+              placeholder="/#assessment"
             />
           </Field>
         </div>
@@ -681,13 +695,38 @@ function HeroManager({
             accept="image/*"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) handleImageUpload(file);
+              if (file) {
+                e.target.value = '';
+                setPendingImage(file);
+                setCropOpen(true);
+              }
             }}
             className="input"
             disabled={uploadingImage}
           />
-          {uploadingImage && <p className="mt-1 text-xs text-indigo-500">Uploading...</p>}
+          {uploadingImage ? (
+            <p className="mt-1 text-xs text-coral-500">Uploading...</p>
+          ) : (
+            <p className="mt-1 text-xs text-ink-muted">
+              Pick a photo — crop/zoom kar ke size fit karein (big images crop hoti hain, small zoom hoti hain).
+            </p>
+          )}
         </Field>
+
+        <ImageCropModal
+          open={cropOpen}
+          file={pendingImage}
+          aspect={4 / 3}
+          onCancel={() => {
+            setCropOpen(false);
+            setPendingImage(null);
+          }}
+          onApply={(cropped, previewUrl) => {
+            setCropOpen(false);
+            setPendingImage(null);
+            handleImageUpload(cropped, previewUrl);
+          }}
+        />
 
         {form.image_url && (
           <img
@@ -737,7 +776,7 @@ function HeroManager({
 // Ek hi record hai (jaise Hero) — Home, About, Library, aur Success
 // Stories pages ke tamam section headings/eyebrows/subtext yahan se
 // edit hote hain, grouped by page with collapsible sections.
-type HeadingField = { key: keyof PageHeadingsRow; label: string; multiline?: boolean };
+type HeadingField = { key: keyof PageHeadingsRow; label: string; multiline?: boolean; kind?: 'text' | 'textarea' | 'image' };
 type HeadingGroup = { title: string; fields: HeadingField[] };
 
 const headingGroups: HeadingGroup[] = [
@@ -778,6 +817,22 @@ const headingGroups: HeadingGroup[] = [
       { key: 'about_values_eyebrow', label: '"Our values" — eyebrow' },
       { key: 'about_values_heading', label: '"Our values" — heading' },
       { key: 'about_cta_heading', label: 'Bottom CTA heading' },
+      { key: 'about_mentor_1_name', label: 'Mentor 1 — name' },
+      { key: 'about_mentor_1_role', label: 'Mentor 1 — role' },
+      { key: 'about_mentor_1_desc', label: 'Mentor 1 — description', multiline: true },
+      { key: 'about_mentor_1_photo', label: 'Mentor 1 — photo', kind: 'image' },
+      { key: 'about_mentor_2_name', label: 'Mentor 2 — name' },
+      { key: 'about_mentor_2_role', label: 'Mentor 2 — role' },
+      { key: 'about_mentor_2_desc', label: 'Mentor 2 — description', multiline: true },
+      { key: 'about_mentor_2_photo', label: 'Mentor 2 — photo', kind: 'image' },
+      { key: 'about_mentor_3_name', label: 'Mentor 3 — name' },
+      { key: 'about_mentor_3_role', label: 'Mentor 3 — role' },
+      { key: 'about_mentor_3_desc', label: 'Mentor 3 — description', multiline: true },
+      { key: 'about_mentor_3_photo', label: 'Mentor 3 — photo', kind: 'image' },
+      { key: 'about_mentor_4_name', label: 'Mentor 4 — name' },
+      { key: 'about_mentor_4_role', label: 'Mentor 4 — role' },
+      { key: 'about_mentor_4_desc', label: 'Mentor 4 — description', multiline: true },
+      { key: 'about_mentor_4_photo', label: 'Mentor 4 — photo', kind: 'image' },
     ],
   },
   {
@@ -816,10 +871,23 @@ function PageHeadingsManager({
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [openGroup, setOpenGroup] = useState<string>(headingGroups[0].title);
+  const [uploadingImage, setUploadingImage] = useState<string | null>(null);
 
   useEffect(() => {
     setForm(item);
   }, [item]);
+
+  const handleImageUpload = async (key: keyof PageHeadingsRow, file: File) => {
+    setUploadingImage(key);
+    try {
+      const url = await uploadFile(file);
+      setForm((f) => ({ ...f, [key]: url }));
+    } catch (err) {
+      alert('Upload failed: ' + (err instanceof Error ? err.message : ''));
+    } finally {
+      setUploadingImage(null);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -841,7 +909,7 @@ function PageHeadingsManager({
   return (
     <div>
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-ink">Page Headings</h1>
+        <h1 className="text-2xl font-bold">Page Headings</h1>
         <p className="mt-1 text-sm text-ink-soft">
           Har page (Home, About Us, Career Explainer, Success Stories) ke section headings,
           eyebrows aur subtext yahan se edit karein — save karte hi live site pe update ho jayega.
@@ -869,7 +937,38 @@ function PageHeadingsManager({
                   <div className="space-y-3 border-t border-line px-5 py-5">
                     {group.fields.map((f) => (
                       <Field key={f.key} label={f.label}>
-                        {f.multiline ? (
+                        {f.kind === 'image' ? (
+                          <div className="space-y-2">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handleImageUpload(f.key, file);
+                              }}
+                              className="input"
+                              disabled={uploadingImage === f.key}
+                            />
+                            {uploadingImage === f.key && (
+                              <p className="text-xs text-coral-500">Uploading...</p>
+                            )}
+                            {form[f.key] ? (
+                              <img
+                                src={form[f.key]}
+                                alt={f.label}
+                                className="h-24 w-24 rounded-xl border border-line object-cover"
+                              />
+                            ) : (
+                              <div className="h-24 w-24 rounded-xl border border-dashed border-line" />
+                            )}
+                            <input
+                              className="input"
+                              value={form[f.key]}
+                              onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+                              placeholder="...or paste an image URL"
+                            />
+                          </div>
+                        ) : f.multiline ? (
                           <textarea
                             className="input"
                             rows={2}
@@ -893,7 +992,7 @@ function PageHeadingsManager({
         </div>
 
         <div className="mt-5 flex items-center gap-3">
-          <button type="submit" disabled={saving} className="btn-primary disabled:opacity-70">
+          <button type="submit" disabled={saving || uploadingImage !== null} className="btn-primary disabled:opacity-70">
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save changes
           </button>
@@ -1134,24 +1233,33 @@ function TrackForm({
   const [tagsStr, setTagsStr] = useState(initial.suitable_for.join(', '));
   const [uploadingThumb, setUploadingThumb] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [videoUploadPct, setVideoUploadPct] = useState(0);
 
-  const handleFileUpload = async (file: File, field: 'thumbnail' | 'video_url') => {
-    const setUploading = field === 'thumbnail' ? setUploadingThumb : setUploadingVideo;
-    setUploading(true);
+  const handleThumbUpload = async (file: File) => {
+    setUploadingThumb(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch(`${API_URL}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Upload failed');
-      setForm((f) => ({ ...f, [field]: data.url }));
+      const url = await uploadFile(file);
+      setForm((f) => ({ ...f, thumbnail: url }));
     } catch (err) {
       alert('Upload failed: ' + (err instanceof Error ? err.message : ''));
     } finally {
-      setUploading(false);
+      setUploadingThumb(false);
+    }
+  };
+
+  // Video chunk-chunk karke upload hota hai (2MB sections) — is liye bari
+  // files bhi hang kare bina progress ke saath upload ho jati hain.
+  const handleVideoUpload = async (file: File) => {
+    setUploadingVideo(true);
+    setVideoUploadPct(0);
+    try {
+      const url = await uploadVideo(file, { onProgress: setVideoUploadPct });
+      setForm((f) => ({ ...f, video_url: url }));
+    } catch (err) {
+      alert('Upload failed: ' + (err instanceof Error ? err.message : ''));
+      setVideoUploadPct(0);
+    } finally {
+      setUploadingVideo(false);
     }
   };
 
@@ -1208,12 +1316,12 @@ function TrackForm({
           accept="image/*"
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) handleFileUpload(file, 'thumbnail');
+            if (file) handleThumbUpload(file);
           }}
           className="input-base"
           disabled={uploadingThumb}
         />
-        {uploadingThumb && <p className="mt-1 text-xs text-indigo-500">Uploading...</p>}
+        {uploadingThumb && <p className="mt-1 text-xs text-coral-500">Uploading...</p>}
         {form.thumbnail && (
           <img src={form.thumbnail} alt="Thumbnail preview" className="mt-2 h-24 w-40 rounded-lg object-cover" />
         )}
@@ -1225,13 +1333,23 @@ function TrackForm({
           accept="video/*"
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) handleFileUpload(file, 'video_url');
+            if (file) handleVideoUpload(file);
           }}
           className="input-base"
           disabled={uploadingVideo}
         />
-        {uploadingVideo && <p className="mt-1 text-xs text-indigo-500">Uploading...</p>}
-        {form.video_url && (
+        {uploadingVideo && (
+          <div className="mt-2">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-line">
+              <div
+                className="h-full rounded-full bg-coral-500 transition-all duration-200"
+                style={{ width: `${videoUploadPct}%` }}
+              />
+            </div>
+            <p className="mt-1 text-xs text-coral-500">Uploading video… {videoUploadPct}%</p>
+          </div>
+        )}
+        {form.video_url && !uploadingVideo && (
           <video src={form.video_url} controls className="mt-2 h-24 w-40 rounded-lg object-cover" />
         )}
       </Field>
@@ -1486,15 +1604,8 @@ function StoryForm({
   const handleAvatarUpload = async (file: File) => {
     setUploadingAvatar(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch(`${API_URL}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Upload failed');
-      setForm((f) => ({ ...f, avatar: data.url }));
+      const url = await uploadFile(file);
+      setForm((f) => ({ ...f, avatar: url }));
     } catch (err) {
       alert('Upload failed: ' + (err instanceof Error ? err.message : ''));
     } finally {
@@ -1527,7 +1638,7 @@ function StoryForm({
             className="input-base"
             disabled={uploadingAvatar}
           />
-          {uploadingAvatar && <p className="mt-1 text-xs text-indigo-500">Uploading...</p>}
+          {uploadingAvatar && <p className="mt-1 text-xs text-coral-500">Uploading...</p>}
           {form.avatar && (
             <img src={form.avatar} alt="Avatar preview" className="mt-2 h-16 w-16 rounded-full object-cover" />
           )}
@@ -1543,6 +1654,292 @@ function StoryForm({
         <input type="number" className="input-base" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} />
       </Field>
       <SaveBar saving={saving} />
+    </form>
+  );
+}
+
+// ============ STORY SUBMISSIONS ============
+// Success Stories page ka "Submit your story" form yahan from visitors
+// collect hota hai. Admin approve kare to public par live ho jata hai.
+const segmentOptions: { value: SuccessStory['segment']; label: string }[] = [
+  { value: 'students', label: 'Students & Job Seekers' },
+  { value: 'women-home', label: 'Women Learning From Home' },
+  { value: 'business', label: 'Small Business Owners' },
+];
+
+const categoryOptions: { value: SuccessStory['category']; label: string }[] = [
+  { value: 'tech', label: 'Technology' },
+  { value: 'creative', label: 'Creative' },
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'business', label: 'Business' },
+  { value: 'freelancing', label: 'Freelancing' },
+];
+
+function StorySubmissionsManager({ onChanged }: { onChanged: () => void }) {
+  const [items, setItems] = useState<SuccessStory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<SuccessStory | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      setItems(await apiFetchJson<SuccessStory>('/success-stories/admin'));
+    } catch {
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const blank: SuccessStory = {
+    id: '', name: '', city: '', segment: 'students', category: 'tech',
+    track_label: '', outcome: '', quote: '', photo_url: '', video_url: '',
+    featured: false, approved_for_publish: false, submitter_email: null,
+    created_at: new Date().toISOString(),
+  };
+
+  const handleSave = async (row: SuccessStory) => {
+    setSaving(true);
+    try {
+      await apiSave('/success-stories', row.id, {
+        name: row.name, city: row.city, segment: row.segment, category: row.category,
+        track_label: row.track_label, outcome: row.outcome, quote: row.quote,
+        photo_url: row.photo_url, video_url: row.video_url ?? '',
+        featured: row.featured, approved_for_publish: row.approved_for_publish,
+        submitter_email: row.submitter_email,
+      });
+      setEditing(null); setAdding(false);
+      await load(); onChanged();
+    } catch (err) {
+      alert('Save failed: ' + (err instanceof Error ? err.message : ''));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Delete this submission?')) return;
+    try {
+      await apiDelete('/success-stories', id);
+      await load(); onChanged();
+    } catch (err) {
+      alert('Delete failed: ' + (err instanceof Error ? err.message : ''));
+    }
+  };
+
+  const handleApprove = async (row: SuccessStory) => {
+    setSaving(true);
+    try {
+      await apiSave('/success-stories', row.id, { approved_for_publish: true });
+      await load(); onChanged();
+    } catch (err) {
+      alert('Approve failed: ' + (err instanceof Error ? err.message : ''));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const pending = items.filter((s) => !s.approved_for_publish).length;
+
+  return (
+    <div>
+      <SectionHeader
+        title="Story Submissions"
+        subtitle={`${items.length} total submissions from your "Submit your story" form — ${pending} waiting for approval. Approved ones go live on the Success Stories page.`}
+        onAdd={() => setAdding(true)}
+        addLabel="Add manually"
+      />
+
+      {(adding || editing) && (
+        <EditorShell
+          title={editing ? 'Edit submission' : 'New submission'}
+          onCancel={() => { setEditing(null); setAdding(false); }}
+        >
+          <SubmissionForm
+            initial={editing ?? blank}
+            saving={saving}
+            onSave={handleSave}
+            onCancel={() => { setEditing(null); setAdding(false); }}
+          />
+        </EditorShell>
+      )}
+
+      {loading ? (
+        <div className="flex justify-center py-16">
+          <Loader2 className="h-7 w-7 animate-spin text-coral-500" />
+        </div>
+      ) : items.length === 0 ? (
+        <p className="card p-6 text-sm text-ink-soft">
+          No submissions yet. Stories sent from the Success Stories page will appear here.
+        </p>
+      ) : (
+        <div className="grid gap-3">
+          {items.map((s) => (
+            <div key={s.id} className="card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4">
+              <img
+                src={s.photo_url || ''}
+                alt=""
+                className="h-11 w-11 shrink-0 rounded-full border border-line bg-canvas-tint object-cover"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-bold text-ink">{s.name}</p>
+                  {s.approved_for_publish ? (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-bold text-green-600">
+                      <Check className="h-3 w-3" /> Approved
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-bold text-amber-600">
+                      Pending
+                    </span>
+                  )}
+                </div>
+                <p className="mt-0.5 truncate text-sm text-ink-soft">
+                  {s.track_label} · {s.city}
+                  {s.submitter_email ? ` · ${s.submitter_email}` : ''}
+                </p>
+                <p className="mt-1 line-clamp-2 text-xs text-ink-muted">"{s.quote}"</p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                {!s.approved_for_publish && (
+                  <button
+                    type="button"
+                    onClick={() => handleApprove(s)}
+                    disabled={saving}
+                    className="inline-flex items-center gap-1 rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs font-semibold text-green-600 transition-colors hover:bg-green-100 disabled:opacity-60"
+                  >
+                    <Check className="h-3.5 w-3.5" />
+                    Approve
+                  </button>
+                )}
+                <EditButton onClick={() => setEditing(s)} />
+                <DeleteButton onClick={() => handleDelete(s.id)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SubmissionForm({
+  initial, saving, onSave, onCancel,
+}: EditorProps<SuccessStory>) {
+  const [form, setForm] = useState<SuccessStory>(initial);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  const handlePhotoUpload = async (file: File) => {
+    setUploadingPhoto(true);
+    try {
+      const url = await uploadFile(file);
+      setForm((f) => ({ ...f, photo_url: url }));
+    } catch (err) {
+      alert('Upload failed: ' + (err instanceof Error ? err.message : ''));
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Name">
+          <input className="input-base" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+        </Field>
+        <Field label="City">
+          <input className="input-base" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+        </Field>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Segment">
+          <select className="input-base" value={form.segment} onChange={(e) => setForm({ ...form, segment: e.target.value as SuccessStory['segment'] })}>
+            {segmentOptions.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label="Category">
+          <select className="input-base" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as SuccessStory['category'] })}>
+            {categoryOptions.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </Field>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Track / Program label">
+          <input className="input-base" value={form.track_label} onChange={(e) => setForm({ ...form, track_label: e.target.value })} />
+        </Field>
+        <Field label="Outcome">
+          <input className="input-base" value={form.outcome} onChange={(e) => setForm({ ...form, outcome: e.target.value })} />
+        </Field>
+      </div>
+      <Field label="Photo">
+        <div className="flex flex-wrap items-center gap-3">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handlePhotoUpload(file);
+            }}
+            className="input-base"
+            disabled={uploadingPhoto}
+          />
+          {form.photo_url && (
+            <img src={form.photo_url} alt="Photo preview" className="h-16 w-16 rounded-full object-cover" />
+          )}
+        </div>
+        {uploadingPhoto && <p className="mt-1 text-xs text-coral-500">Uploading...</p>}
+        <input
+          className="input-base mt-2"
+          value={form.photo_url}
+          onChange={(e) => setForm({ ...form, photo_url: e.target.value })}
+          placeholder="...or paste an image URL"
+        />
+      </Field>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Video URL (optional)">
+          <input className="input-base" value={form.video_url ?? ''} onChange={(e) => setForm({ ...form, video_url: e.target.value || null })} />
+        </Field>
+        <Field label="Submitter email (optional)">
+          <input className="input-base" value={form.submitter_email ?? ''} onChange={(e) => setForm({ ...form, submitter_email: e.target.value || null })} />
+        </Field>
+      </div>
+      <Field label="Quote">
+        <textarea className="input-base resize-none" rows={3} value={form.quote} onChange={(e) => setForm({ ...form, quote: e.target.value })} required />
+      </Field>
+      <div className="flex flex-wrap gap-4">
+        <label className="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+          <input
+            type="checkbox"
+            checked={form.approved_for_publish}
+            onChange={(e) => setForm({ ...form, approved_for_publish: e.target.checked })}
+            className="h-4 w-4"
+          />
+          Approved (show on public page)
+        </label>
+        <label className="flex items-center gap-2 text-sm font-semibold text-ink-soft">
+          <input
+            type="checkbox"
+            checked={form.featured}
+            onChange={(e) => setForm({ ...form, featured: e.target.checked })}
+            className="h-4 w-4"
+          />
+          Featured
+        </label>
+      </div>
+      <SaveBar saving={saving} />
+      <button type="button" onClick={onCancel} className="text-sm font-semibold text-ink-muted hover:text-ink">
+        Cancel
+      </button>
     </form>
   );
 }
@@ -1610,7 +2007,7 @@ function StepsManager({
       <div className="grid gap-3">
         {items.map((s) => (
           <div key={s.id} className="card flex items-center gap-4 p-4">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-500">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-coral-50 text-sm font-bold text-coral-500">
               {s.step}
             </span>
             <div className="min-w-0 flex-1">
@@ -1945,7 +2342,7 @@ function FooterManager({
   return (
     <div>
       <div className="mb-5">
-        <h1 className="text-2xl font-bold text-ink">Footer Settings</h1>
+        <h1 className="text-2xl font-bold">Footer Settings</h1>
         <p className="mt-1 text-sm text-ink-soft">
           Website ke footer ki har cheez — contact info, social links, address aur columns ke
           links — yahan se edit karein. Save karte hi live footer par turant nazar aa jayega.
@@ -1954,7 +2351,7 @@ function FooterManager({
 
       <form onSubmit={handleSave} className="space-y-5">
         <div className="card space-y-4 p-6">
-          <h3 className="text-sm font-bold text-ink">Contact &amp; description</h3>
+          <h3 className="text-sm font-bold">Contact &amp; description</h3>
 
           <Field label="Description (footer ke pehle column ke neeche)">
             <textarea
@@ -1994,7 +2391,7 @@ function FooterManager({
         </div>
 
         <div className="card space-y-4 p-6">
-          <h3 className="text-sm font-bold text-ink">Social links</h3>
+          <h3 className="text-sm font-bold">Social links</h3>
           <p className="text-xs text-ink-soft">
             Jis platform ka URL khali chodenge, wo icon footer par nahi dikhega.
           </p>
@@ -2043,7 +2440,7 @@ function FooterManager({
         </div>
 
         <div className="card space-y-3 p-6">
-          <h3 className="text-sm font-bold text-ink">Copyright line</h3>
+          <h3 className="text-sm font-bold">Copyright line</h3>
           <Field label="Text jo © {year} ke baad aata hai">
             <input
               className="input"
@@ -2056,11 +2453,11 @@ function FooterManager({
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-ink">Footer columns &amp; links</h3>
+            <h3 className="text-sm font-bold">Footer columns &amp; links</h3>
             <button
               type="button"
               onClick={addColumn}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-soft hover:border-indigo-200 hover:text-indigo-500"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-soft hover:border-coral-200 hover:text-coral-500"
             >
               <Plus className="h-3.5 w-3.5" />
               Add column
@@ -2116,7 +2513,7 @@ function FooterManager({
               <button
                 type="button"
                 onClick={() => addLink(colIndex)}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-soft hover:border-indigo-200 hover:text-indigo-500"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-ink-soft hover:border-coral-200 hover:text-coral-500"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add link

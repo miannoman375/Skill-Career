@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Search,
@@ -88,7 +88,7 @@ export default function SuccessStoriesPage() {
               </div>
             </div>
 
-            <span className="chip mt-4 w-fit border border-line bg-canvas-tint text-indigo-500">
+            <span className="chip mt-4 w-fit border border-line bg-canvas-tint text-coral-500">
               {selected.role}
             </span>
 
@@ -136,7 +136,7 @@ function PageHeader({
       <div className="container-page relative py-12 sm:py-16">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-balance text-4xl font-extrabold leading-[1.1] text-ink sm:text-5xl">
+            <h1 className="text-balance text-4xl font-extrabold leading-[1.1] sm:text-5xl">
               {content.pageHeadings.stories_hero_heading}
             </h1>
             <p className="mt-3 max-w-xl text-lg text-ink-soft">
@@ -162,7 +162,7 @@ function PageHeader({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name, role, or city"
-              className="w-full rounded-xl border border-line bg-white py-3.5 pl-12 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              className="w-full rounded-xl border border-line bg-white py-3.5 pl-12 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-coral-300 focus:outline-none focus:ring-2 focus:ring-coral-200"
             />
           </div>
         </div>
@@ -223,7 +223,7 @@ function FeaturedStory({ story, onSelect }: { story: StoryRow; onSelect: () => v
           </div>
 
           <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
-            <span className="chip w-fit border border-line bg-canvas-tint text-indigo-500">
+            <span className="chip w-fit border border-line bg-canvas-tint text-coral-500">
               <span className="h-1.5 w-1.5 rounded-full bg-coral-400" />
               {story.role}
             </span>
@@ -278,7 +278,7 @@ function StoryGrid({
   return (
     <section className="py-4 sm:py-6">
       <div className="container-page">
-        <h2 className="text-2xl font-bold text-ink sm:text-3xl">{content.pageHeadings.stories_all_heading}</h2>
+        <h2 className="text-2xl font-bold sm:text-3xl">{content.pageHeadings.stories_all_heading}</h2>
 
         {stories.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-dashed border-line bg-canvas-card p-10 text-center">
@@ -301,7 +301,7 @@ function StoryGrid({
         {!hasFilters && stories.length > 0 && (
           <p className="mt-8 text-center text-sm text-ink-muted">
             Want to be next?{' '}
-            <a href="#submit-story" className="font-semibold text-indigo-500 hover:text-coral-400">
+            <a href="#submit-story" className="font-semibold text-coral-500 hover:text-coral-400">
               Submit your story
             </a>
           </p>
@@ -397,7 +397,7 @@ function CtaBanner() {
     <section className="py-8 sm:py-12">
       <div className="container-page">
         <div className="flex flex-col items-center gap-5 rounded-2xl border border-coral-200 bg-coral-50 p-8 text-center sm:p-12">
-          <h2 className="max-w-xl text-balance text-2xl font-bold text-ink sm:text-3xl">
+          <h2 className="max-w-xl text-balance text-2xl font-bold sm:text-3xl">
             {content.pageHeadings.stories_cta_heading}
           </h2>
           <p className="max-w-lg text-ink-soft">
@@ -489,7 +489,7 @@ function SubmitStory() {
             <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
               {content.pageHeadings.stories_submit_eyebrow}
             </p>
-            <h2 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">
+            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
               {content.pageHeadings.stories_submit_heading}
             </h2>
             <p className="mt-3 text-ink-soft">
@@ -499,8 +499,8 @@ function SubmitStory() {
           </div>
 
           {status === 'success' ? (
-            <div className="mt-8 rounded-2xl border border-indigo-200 bg-indigo-50 p-8 text-center">
-              <CheckCircle2 className="mx-auto h-10 w-10 text-indigo-500" />
+            <div className="mt-8 rounded-2xl border border-coral-200 bg-coral-50 p-8 text-center">
+              <CheckCircle2 className="mx-auto h-10 w-10 text-coral-500" />
               <p className="mt-3 text-base font-bold text-ink">Thank you — your story is in!</p>
               <p className="mt-1 text-sm text-ink-soft">
                 Our team will review it and publish it once approved. You can submit another below.
@@ -676,7 +676,7 @@ function LoadingState() {
   return (
     <section className="py-20">
       <div className="container-page flex flex-col items-center gap-3 text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-coral-500" />
         <p className="text-sm text-ink-muted">Loading stories...</p>
       </div>
     </section>
