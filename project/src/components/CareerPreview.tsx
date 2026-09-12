@@ -1,7 +1,6 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Play, Clock, Wallet, Timer, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import AuthLink from '@/components/AuthLink';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useReveal } from '@/hooks/useReveal';
 import Modal from '@/components/Modal';
@@ -38,7 +37,7 @@ export default function CareerPreview() {
             <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
               {content.pageHeadings.home_tracks_eyebrow}
             </p>
-            <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
               {content.pageHeadings.home_tracks_heading}
             </h2>
             <p className="mt-3 text-ink-soft">
@@ -47,7 +46,7 @@ export default function CareerPreview() {
           </div>
           <Link
             to="/library"
-            className="group inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-500 hover:text-coral-400"
+            className="group inline-flex items-center gap-1.5 text-sm font-semibold text-coral-500 hover:text-coral-400"
           >
             View all
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -56,7 +55,7 @@ export default function CareerPreview() {
 
         {loading ? (
           <div className="mt-12 flex justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-indigo-500" />
+            <Loader2 className="h-6 w-6 animate-spin text-coral-500" />
           </div>
         ) : (
           <div
@@ -71,7 +70,7 @@ export default function CareerPreview() {
                 type="button"
                 onClick={() => setSelected(track)}
                 style={{ transitionDelay: `${i * 90}ms` }}
-                className="card group overflow-hidden text-left hover:-translate-y-1 hover:border-indigo-200"
+                className="card group overflow-hidden text-left hover:-translate-y-1 hover:border-coral-200"
               >
                 <div className="relative aspect-video overflow-hidden">
                   <img
@@ -85,26 +84,26 @@ export default function CareerPreview() {
                     <span className="h-1.5 w-1.5 rounded-full bg-coral-400" />
                     {track.category_label}
                   </span>
-                  <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-indigo-500 shadow-lg transition-transform duration-300 group-hover:scale-110">
+                  <span className="absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-coral-500 shadow-lg transition-transform duration-300 group-hover:scale-110">
                     <Play className="h-5 w-5 fill-indigo-500" />
                   </span>
                 </div>
 
                 <div className="p-5">
-                  <h3 className="text-base font-bold leading-snug text-ink">{track.title}</h3>
+                  <h3 className="text-base font-bold leading-snug">{track.title}</h3>
                   <p className="mt-1 text-xs font-medium text-ink-muted">{track.level}</p>
 
                   <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink-soft">
                     <span className="inline-flex items-center gap-1.5">
-                      <Wallet className="h-3.5 w-3.5 text-indigo-500" />
+                      <Wallet className="h-3.5 w-3.5 text-coral-500" />
                       {track.pay_range}
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <Clock className="h-3.5 w-3.5 text-indigo-500" />
+                      <Clock className="h-3.5 w-3.5 text-coral-500" />
                       {track.duration}
                     </span>
                     <span className="inline-flex items-center gap-1.5">
-                      <Timer className="h-3.5 w-3.5 text-indigo-500" />
+                      <Timer className="h-3.5 w-3.5 text-coral-500" />
                       {track.time_to_income}
                     </span>
                   </div>
@@ -151,7 +150,7 @@ export default function CareerPreview() {
             </div>
 
             <div className="p-6 sm:p-7">
-              <h3 id="track-title" className="text-xl font-bold text-ink sm:text-2xl">
+              <h3 id="track-title" className="text-xl font-bold sm:text-2xl">
                 {selected.title}
               </h3>
               <p className="mt-1 text-sm font-medium text-ink-muted">{selected.level}</p>
@@ -162,21 +161,21 @@ export default function CareerPreview() {
               <div className="mt-5 grid grid-cols-3 gap-3">
                 <div>
                   <p className="flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                    <Wallet className="h-3.5 w-3.5 text-indigo-500" />
+                    <Wallet className="h-3.5 w-3.5 text-coral-500" />
                     Pay
                   </p>
                   <p className="mt-1 text-sm font-bold text-ink">{selected.pay_range}</p>
                 </div>
                 <div>
                   <p className="flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                    <Clock className="h-3.5 w-3.5 text-indigo-500" />
+                    <Clock className="h-3.5 w-3.5 text-coral-500" />
                     Length
                   </p>
                   <p className="mt-1 text-sm font-bold text-ink">{selected.duration}</p>
                 </div>
                 <div>
                   <p className="flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                    <Timer className="h-3.5 w-3.5 text-indigo-500" />
+                    <Timer className="h-3.5 w-3.5 text-coral-500" />
                     To income
                   </p>
                   <p className="mt-1 text-sm font-bold text-ink">{selected.time_to_income}</p>
@@ -186,20 +185,20 @@ export default function CareerPreview() {
               <div className="mt-5 flex flex-wrap gap-2">
                 {selected.suitable_for.map((tag) => (
                   <span key={tag} className="chip border border-line bg-white text-ink-soft">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-coral-400" />
                     {tag}
                   </span>
                 ))}
               </div>
 
-              <AuthLink
-                to="/signup"
+              <Link
+                to="/#assessment"
                 className="btn-primary mt-6 w-full text-base"
                 onClick={() => setSelected(null)}
               >
                 Start your assessment
                 <ArrowRight className="h-4 w-4" />
-              </AuthLink>
+              </Link>
             </div>
           </div>
         )}

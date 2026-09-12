@@ -1,4 +1,4 @@
-import { Radio, Compass, Users, GraduationCap, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
+﻿import { Radio, Compass, Users, GraduationCap, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useReveal } from '@/hooks/useReveal';
 
@@ -22,7 +22,7 @@ export default function HowItWorks() {
           <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
             {content.pageHeadings.home_how_eyebrow}
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
             {content.pageHeadings.home_how_heading}
           </h2>
           <p className="mt-3 text-ink-soft">
@@ -32,7 +32,7 @@ export default function HowItWorks() {
 
         {loading ? (
           <div className="mt-12 flex justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-indigo-500" />
+            <Loader2 className="h-6 w-6 animate-spin text-coral-500" />
           </div>
         ) : (
           <div
@@ -47,7 +47,7 @@ export default function HowItWorks() {
                 <div
                   key={step.id}
                   style={{ transitionDelay: `${i * 100}ms` }}
-                  className="card relative w-full p-6 hover:-translate-y-1 hover:border-indigo-200 sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
+                  className="card relative w-full p-6 hover:-translate-y-1 hover:border-coral-200 sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)]"
                 >
                   <span className="absolute right-5 top-5 font-display text-4xl font-extrabold text-indigo-50">
                     {step.step}
@@ -64,7 +64,7 @@ export default function HowItWorks() {
                   <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-coral-400">
                     {step.label}
                   </p>
-                  <h3 className="mt-1 text-base font-bold text-ink">{step.title}</h3>
+                  <h3 className="mt-1 text-base font-bold">{step.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-soft">{step.detail}</p>
 
                   {i < steps.length - 1 && (

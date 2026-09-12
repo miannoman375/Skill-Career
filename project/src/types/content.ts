@@ -123,6 +123,22 @@ export interface PageHeadingsRow {
   about_values_eyebrow: string;
   about_values_heading: string;
   about_cta_heading: string;
+  about_mentor_1_name: string;
+  about_mentor_1_role: string;
+  about_mentor_1_desc: string;
+  about_mentor_1_photo: string;
+  about_mentor_2_name: string;
+  about_mentor_2_role: string;
+  about_mentor_2_desc: string;
+  about_mentor_2_photo: string;
+  about_mentor_3_name: string;
+  about_mentor_3_role: string;
+  about_mentor_3_desc: string;
+  about_mentor_3_photo: string;
+  about_mentor_4_name: string;
+  about_mentor_4_role: string;
+  about_mentor_4_desc: string;
+  about_mentor_4_photo: string;
 
   // Career Explainer / Library page
   library_hero_badge: string;

@@ -1,4 +1,4 @@
-import { ShieldCheck, Lock, UsersRound } from 'lucide-react';
+﻿import { ShieldCheck, Lock, UsersRound } from 'lucide-react';
 import { useSiteContent } from '@/hooks/useSiteContent';
 
 const points = [
@@ -31,7 +31,7 @@ export default function TrustBadge() {
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-500 text-white">
                   <ShieldCheck className="h-5 w-5" strokeWidth={2.2} />
                 </span>
-                <h2 className="text-xl font-bold text-ink">
+                <h2 className="text-xl font-bold">
                   {content.pageHeadings.home_trust_heading}
                 </h2>
               </div>

@@ -9,7 +9,7 @@ const heroSchema = new mongoose.Schema({
       'Not sure which skill to learn? Take our free assessment and get a clear, honest career plan before you spend a rupee on any course.',
   },
   primary_cta_text: { type: String, default: 'Take the free skill assessment' },
-  primary_cta_link: { type: String, default: '/signup' },
+  primary_cta_link: { type: String, default: '/#assessment' },
   secondary_cta_text: { type: String, default: 'Browse career explainers' },
   secondary_cta_link: { type: String, default: '/library' },
   image_url: {

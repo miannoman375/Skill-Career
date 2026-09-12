@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import {
   Sparkles,
   Radio,
@@ -99,21 +99,41 @@ const mentors = [
   {
     name: 'Anjali Mehta',
     role: 'Lead Career Coach',
+    desc: 'Runs our free assessments and one-to-one guidance calls.',
+    nameKey: 'about_mentor_1_name',
+    roleKey: 'about_mentor_1_role',
+    descKey: 'about_mentor_1_desc',
+    photoKey: 'about_mentor_1_photo',
     photo: 'https://images.pexels.com/photos/38707525/pexels-photo-38707525.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   },
   {
     name: 'Priya Nair',
     role: 'Freelance Mentor',
+    desc: 'Leads freelance skill sessions and interview prep.',
+    nameKey: 'about_mentor_2_name',
+    roleKey: 'about_mentor_2_role',
+    descKey: 'about_mentor_2_desc',
+    photoKey: 'about_mentor_2_photo',
     photo: 'https://images.pexels.com/photos/33680700/pexels-photo-33680700.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   },
   {
     name: 'Rahul Verma',
     role: 'Marketing Consultant',
+    desc: 'Guides small business owners on digital growth.',
+    nameKey: 'about_mentor_3_name',
+    roleKey: 'about_mentor_3_role',
+    descKey: 'about_mentor_3_desc',
+    photoKey: 'about_mentor_3_photo',
     photo: 'https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   },
   {
     name: 'Sneha Rao',
     role: 'Brand Designer',
+    desc: 'Teaches design basics and portfolio building for beginners.',
+    nameKey: 'about_mentor_4_name',
+    roleKey: 'about_mentor_4_role',
+    descKey: 'about_mentor_4_desc',
+    photoKey: 'about_mentor_4_photo',
     photo: 'https://images.pexels.com/photos/7752788/pexels-photo-7752788.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   },
 ];
@@ -180,7 +200,7 @@ function PageHeader() {
       />
       <div className="container-page relative py-14 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-balance text-4xl font-extrabold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">
+          <h1 className="text-balance text-4xl font-extrabold leading-[1.08] sm:text-5xl lg:text-6xl">
             {content.pageHeadings.about_hero_heading}
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-ink-soft">
@@ -217,7 +237,7 @@ function WhyWeExist() {
             <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
               {content.pageHeadings.about_why_eyebrow}
             </p>
-            <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
               {content.pageHeadings.about_why_heading}
             </h2>
             <p className="mt-4 text-ink-soft">
@@ -241,7 +261,7 @@ function WhyWeExist() {
                 className={`rounded-xl border p-5 ${
                   row.muted
                     ? 'border-line bg-canvas-card text-ink-muted'
-                    : 'border-indigo-200 bg-indigo-50 text-ink'
+                    : 'border-coral-200 bg-coral-50 text-ink'
                 }`}
               >
                 <p className="text-xs font-bold uppercase tracking-wider">
@@ -266,7 +286,7 @@ function Funnel() {
           <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
             {content.pageHeadings.about_funnel_eyebrow}
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
             {content.pageHeadings.about_funnel_heading}
           </h2>
           <p className="mt-3 text-ink-soft">
@@ -301,7 +321,7 @@ function FunnelCard({
   return (
     <div
       style={{ transitionDelay: `${index * 100}ms` }}
-      className="card relative flex flex-col p-6 hover:-translate-y-1 hover:border-indigo-200"
+      className="card relative flex flex-col p-6 hover:-translate-y-1 hover:border-coral-200"
     >
       <div className="flex items-center gap-3">
         <span className="relative z-10 grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-indigo-500 text-white shadow-sm">
@@ -315,14 +335,14 @@ function FunnelCard({
       <p className="mt-4 text-xs font-semibold uppercase tracking-wider text-coral-400">
         {step.label}
       </p>
-      <h3 className="mt-1 text-base font-bold text-ink">{step.title}</h3>
+      <h3 className="mt-1 text-base font-bold">{step.title}</h3>
 
       <ul className="mt-3 space-y-2">
         {step.points.map((p) => {
           const PointIcon = p.icon;
           return (
             <li key={p.text} className="flex items-start gap-2 text-sm text-ink-soft">
-              <PointIcon className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+              <PointIcon className="mt-0.5 h-4 w-4 shrink-0 text-coral-400" />
               {p.text}
             </li>
           );
@@ -349,7 +369,7 @@ function Segments() {
           <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
             {content.pageHeadings.about_segments_eyebrow}
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
             {content.pageHeadings.about_segments_heading}
           </h2>
           <p className="mt-3 text-ink-soft">
@@ -369,12 +389,12 @@ function Segments() {
               <div
                 key={seg.id}
                 style={{ transitionDelay: `${i * 90}ms` }}
-                className="card p-6 hover:-translate-y-1 hover:border-indigo-200"
+                className="card p-6 hover:-translate-y-1 hover:border-coral-200"
               >
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-indigo-50 text-indigo-500">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-coral-50 text-coral-500">
                   <Icon className="h-5 w-5" strokeWidth={2} />
                 </span>
-                <h3 className="mt-4 text-base font-bold text-ink">{seg.label}</h3>
+                <h3 className="mt-4 text-base font-bold">{seg.label}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">{seg.why}</p>
               </div>
             );
@@ -395,7 +415,7 @@ function Mentors() {
           <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
             {content.pageHeadings.about_mentors_eyebrow}
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
             {content.pageHeadings.about_mentors_heading}
           </h2>
           <p className="mt-3 text-ink-soft">
@@ -409,24 +429,32 @@ function Mentors() {
             visible ? 'is-visible' : ''
           }`}
         >
-          {mentors.map((m, i) => (
-            <div
-              key={m.name}
-              style={{ transitionDelay: `${i * 80}ms` }}
-              className="card overflow-hidden text-center hover:-translate-y-1 hover:border-indigo-200"
-            >
-              <img
-                src={m.photo}
-                alt={m.name}
-                loading="lazy"
-                className="aspect-square w-full object-cover"
-              />
-              <div className="p-4">
-                <p className="text-sm font-bold text-ink">{m.name}</p>
-                <p className="mt-0.5 text-xs text-ink-muted">{m.role}</p>
+          {mentors.map((m, i) => {
+            const ph = content.pageHeadings;
+            const photo = ph[m.photoKey as keyof typeof ph] || m.photo;
+            const name = ph[m.nameKey as keyof typeof ph] || m.name;
+            const role = ph[m.roleKey as keyof typeof ph] || m.role;
+            const desc = ph[m.descKey as keyof typeof ph] || m.desc;
+            return (
+              <div
+                key={m.name}
+                style={{ transitionDelay: `${i * 80}ms` }}
+                className="card flex flex-col overflow-hidden text-center hover:-translate-y-1 hover:border-coral-200"
+              >
+                <img
+                  src={photo}
+                  alt={name}
+                  loading="lazy"
+                  className="aspect-square w-full object-cover"
+                />
+                <div className="flex flex-1 flex-col p-4">
+                  <p className="text-sm font-bold text-ink">{name}</p>
+                  <p className="mt-0.5 text-xs text-ink-muted">{role}</p>
+                  <p className="mt-2 flex-1 text-xs leading-relaxed text-ink-soft">{desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
@@ -443,7 +471,7 @@ function Values() {
           <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
             {content.pageHeadings.about_values_eyebrow}
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
             {content.pageHeadings.about_values_heading}
           </h2>
         </div>
@@ -470,7 +498,7 @@ function Values() {
                   <Icon className="h-5 w-5" strokeWidth={2} />
                 </span>
                 <div>
-                  <h3 className="text-base font-bold text-ink">{v.title}</h3>
+                  <h3 className="text-base font-bold">{v.title}</h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">{v.detail}</p>
                 </div>
               </div>
@@ -511,7 +539,7 @@ function CtaBanner() {
     <section className="py-8 sm:py-12">
       <div className="container-page">
         <div className="flex flex-col items-center gap-5 rounded-2xl border border-coral-200 bg-coral-50 p-8 text-center sm:p-12">
-          <h2 className="max-w-xl text-balance text-2xl font-bold text-ink sm:text-3xl">
+          <h2 className="max-w-xl text-balance text-2xl font-bold sm:text-3xl">
             {content.pageHeadings.about_cta_heading}
           </h2>
           <p className="max-w-lg text-ink-soft">

@@ -3,8 +3,8 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  Navigate,
   useLocation,
-  type Location,
 } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -16,16 +16,39 @@ import SuccessStories from '@/components/SuccessStories';
 import TrustBadge from '@/components/TrustBadge';
 import StatsBar from '@/components/StatsBar';
 import Footer from '@/components/Footer';
-import AuthModal from '@/components/AuthModal';
 import LibraryPage from '@/pages/LibraryPage';
 import SuccessStoriesPage from '@/pages/SuccessStoriesPage';
 import AboutPage from '@/pages/AboutPage';
-import AuthPage from '@/pages/AuthPage';
-import SignupPage from '@/pages/SignupPage';
-import { AdminAuthProvider } from '@/admin/AdminAuthContext';
+import { AdminAuthProvider, useAdminAuth } from '@/admin/AdminAuthContext';
 import AdminLogin from '@/admin/AdminLogin';
 import AdminDashboard from '@/admin/AdminDashboard';
 import { SiteContentProvider } from '@/hooks/useSiteContent';
+import { Loader2 } from 'lucide-react';
+
+function FullPageLoader() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-canvas">
+      <Loader2 className="h-8 w-8 animate-spin text-coral-500" />
+    </div>
+  );
+}
+
+// /admin ke andar har page tabhi khulenga jab admin logged-in hai — warna
+// seedha login page par bhej diya jata hai.
+function RequireAdmin({ children }: { children: React.ReactNode }) {
+  const { session, loading } = useAdminAuth();
+  if (loading) return <FullPageLoader />;
+  if (!session) return <Navigate to="/admin/login" replace />;
+  return <>{children}</>;
+}
+
+// /admin/login par agar already logged-in hain to /admin par redirect.
+function RedirectIfLoggedIn({ children }: { children: React.ReactNode }) {
+  const { session, loading } = useAdminAuth();
+  if (loading) return <FullPageLoader />;
+  if (session) return <Navigate to="/admin" replace />;
+  return <>{children}</>;
+}
 
 function HomePage() {
   return (
@@ -68,16 +91,11 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 }
 
 function SiteLayout() {
-  const location = useLocation();
-  const state = location.state as { backgroundLocation?: Location } | null;
-  const backgroundLocation = state?.backgroundLocation;
-  const isAuthRoute = location.pathname === '/login' || location.pathname === '/signup';
-
   return (
     <div className="min-h-screen bg-canvas">
       <Navbar />
       <SiteContentProvider>
-        <Routes location={backgroundLocation ?? location}>
+        <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/library" element={<LibraryPage />} />
           <Route path="/stories" element={<SuccessStoriesPage />} />
@@ -86,29 +104,8 @@ function SiteLayout() {
         {/* Footer SiteContentProvider ke andar hona zaroori hai — warna ye
             hamesha default/fallback data dikhayega, admin panel ka live
             saved data kabhi nahi (Footer bhi useSiteContent() use karta hai). */}
-        {!isAuthRoute && <Footer />}
+        <Footer />
       </SiteContentProvider>
-
-      {isAuthRoute && (
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              <AuthModal>
-                <AuthPage mode="login" />
-              </AuthModal>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <AuthModal>
-                <SignupPage />
-              </AuthModal>
-            }
-          />
-        </Routes>
-      )}
     </div>
   );
 }
@@ -122,11 +119,21 @@ export default function App() {
           path="/admin/login"
           element={
             <AdminLayout>
-              <AdminLogin />
+              <RedirectIfLoggedIn>
+                <AdminLogin />
+              </RedirectIfLoggedIn>
             </AdminLayout>
           }
         />
-        <Route  path="/admin" element={<AdminLayout> <AdminDashboard /></AdminLayout>}
+        <Route
+          path="/admin"
+          element={
+            <AdminLayout>
+              <RequireAdmin>
+                <AdminDashboard />
+              </RequireAdmin>
+            </AdminLayout>
+          }
         />
         <Route path="/*" element={<SiteLayout />} />
       </Routes>

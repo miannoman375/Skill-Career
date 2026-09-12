@@ -23,7 +23,7 @@ export const hero: Hero = {
   subtext:
     'Not sure which skill to learn? Take our free assessment and get a clear, honest career plan before you spend a rupee on any course.',
   primaryCtaText: 'Take the free skill assessment',
-  primaryCtaLink: '/signup',
+  primaryCtaLink: '/#assessment',
   secondaryCtaText: 'Browse career explainers',
   secondaryCtaLink: '/library',
   image:
@@ -436,6 +436,26 @@ export const pageHeadings = {
   about_values_eyebrow: 'Our values',
   about_values_heading: 'What we will not compromise on',
   about_cta_heading: 'Ready to find your path?',
+  about_mentor_1_name: 'Anjali Mehta',
+  about_mentor_1_role: 'Lead Career Coach',
+  about_mentor_1_desc: 'Runs our free assessments and one-to-one guidance calls.',
+  about_mentor_1_photo:
+    'https://images.pexels.com/photos/38707525/pexels-photo-38707525.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  about_mentor_2_name: 'Priya Nair',
+  about_mentor_2_role: 'Freelance Mentor',
+  about_mentor_2_desc: 'Leads freelance skill sessions and interview prep.',
+  about_mentor_2_photo:
+    'https://images.pexels.com/photos/33680700/pexels-photo-33680700.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  about_mentor_3_name: 'Rahul Verma',
+  about_mentor_3_role: 'Marketing Consultant',
+  about_mentor_3_desc: 'Guides small business owners on digital growth.',
+  about_mentor_3_photo:
+    'https://images.pexels.com/photos/5308640/pexels-photo-5308640.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  about_mentor_4_name: 'Sneha Rao',
+  about_mentor_4_role: 'Brand Designer',
+  about_mentor_4_desc: 'Teaches design basics and portfolio building for beginners.',
+  about_mentor_4_photo:
+    'https://images.pexels.com/photos/7752788/pexels-photo-7752788.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
 
   // Career Explainer / Library page
   library_hero_badge: '45-second explainers',
@@ -475,7 +495,7 @@ export const footer = {
       title: 'Explore',
       links: [
         { label: 'Career Explainer Library', to: '/library' },
-        { label: 'Take the Assessment', to: '/signup' },
+        { label: 'Take the Assessment', to: '/#assessment' },
         { label: 'Upcoming Webinars', to: '/#webinars' },
         { label: 'Success Stories', to: '/stories' },
       ],
@@ -492,9 +512,7 @@ export const footer = {
     {
       title: 'Support',
       links: [
-        { label: 'Take Assessment', to: '/signup' },
-        { label: 'Log In', to: '/login' },
-        { label: 'Sign Up', to: '/signup' },
+        { label: 'Take Assessment', to: '/#assessment' },
         { label: 'Women-only Sessions', to: '/#segments' },
       ],
     },

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.env.*
+*.log
+backend/uploads/
+config.json
+project/node_modules/

@@ -1,4 +1,4 @@
-import { Quote, TrendingUp, MapPin, ArrowRight, Loader2 } from 'lucide-react';
+﻿import { Quote, TrendingUp, MapPin, ArrowRight, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSiteContent } from '@/hooks/useSiteContent';
 import { useReveal } from '@/hooks/useReveal';
@@ -16,7 +16,7 @@ export default function SuccessStories() {
           <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
             {content.pageHeadings.home_stories_eyebrow}
           </p>
-          <h2 className="mt-2 text-3xl font-bold text-ink sm:text-4xl">
+          <h2 className="mt-2 text-3xl font-bold sm:text-4xl">
             {content.pageHeadings.home_stories_heading}
           </h2>
           <p className="mt-3 text-ink-soft">
@@ -26,7 +26,7 @@ export default function SuccessStories() {
 
         {loading ? (
           <div className="mt-12 flex justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-indigo-500" />
+            <Loader2 className="h-6 w-6 animate-spin text-coral-500" />
           </div>
         ) : (
           <>

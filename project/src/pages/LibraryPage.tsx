@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import AuthLink from '@/components/AuthLink';
 import {
   Search,
   Play,
@@ -95,7 +94,7 @@ export default function LibraryPage() {
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+        <Loader2 className="h-8 w-8 animate-spin text-coral-500" />
       </div>
     );
   }
@@ -174,28 +173,28 @@ export default function LibraryPage() {
             </div>
 
             <div className="p-6 sm:p-7">
-              <h3 className="text-xl font-bold text-ink sm:text-2xl">{selected.title}</h3>
+              <h3 className="text-xl font-bold sm:text-2xl">{selected.title}</h3>
               <p className="mt-1 text-sm font-medium text-ink-muted">{selected.level}</p>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">{selected.description}</p>
 
               <div className="mt-5 grid grid-cols-3 gap-3">
                 <div>
                   <p className="flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                    <Wallet className="h-3.5 w-3.5 text-indigo-500" />
+                    <Wallet className="h-3.5 w-3.5 text-coral-500" />
                     Pay
                   </p>
                   <p className="mt-1 text-sm font-bold text-ink">{selected.pay_range}</p>
                 </div>
                 <div>
                   <p className="flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                    <Clock className="h-3.5 w-3.5 text-indigo-500" />
+                    <Clock className="h-3.5 w-3.5 text-coral-500" />
                     Length
                   </p>
                   <p className="mt-1 text-sm font-bold text-ink">{selected.duration}</p>
                 </div>
                 <div>
                   <p className="flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-                    <Timer className="h-3.5 w-3.5 text-indigo-500" />
+                    <Timer className="h-3.5 w-3.5 text-coral-500" />
                     To income
                   </p>
                   <p className="mt-1 text-sm font-bold text-ink">{selected.time_to_income}</p>
@@ -205,20 +204,20 @@ export default function LibraryPage() {
               <div className="mt-5 flex flex-wrap gap-2">
                 {selected.suitable_for.map((tag) => (
                   <span key={tag} className="chip border border-line bg-white text-ink-soft">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-coral-400" />
                     {tag}
                   </span>
                 ))}
               </div>
 
-              <AuthLink
-                to="/signup"
+              <Link
+                to="/#assessment"
                 className="btn-primary mt-6 w-full text-base"
                 onClick={() => setSelected(null)}
               >
                 Start your assessment
                 <ArrowRight className="h-4 w-4" />
-              </AuthLink>
+              </Link>
             </div>
           </div>
         )}
@@ -242,7 +241,7 @@ function PageHeader({
         className="pointer-events-none absolute -right-24 -top-10 h-64 w-64 rounded-full bg-coral-100/50 blur-3xl"
       />
       <div className="container-page relative py-12 sm:py-16">
-        <h1 className="text-balance text-4xl font-extrabold leading-[1.1] text-ink sm:text-5xl">
+        <h1 className="text-balance text-4xl font-extrabold leading-[1.1] sm:text-5xl">
           {content.pageHeadings.library_hero_heading}
         </h1>
         <p className="mt-3 max-w-2xl text-lg text-ink-soft">
@@ -262,7 +261,7 @@ function PageHeader({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search a skill, e.g. “web development”"
-              className="w-full rounded-xl border border-line bg-white py-3.5 pl-12 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              className="w-full rounded-xl border border-line bg-white py-3.5 pl-12 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-coral-300 focus:outline-none focus:ring-2 focus:ring-coral-200"
             />
           </div>
         </div>
@@ -350,7 +349,7 @@ function FilterRow({
               className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all ${
                 active
                   ? 'bg-indigo-500 text-white'
-                  : 'border border-line bg-white text-ink-soft hover:border-indigo-200 hover:text-indigo-500'
+                  : 'border border-line bg-white text-ink-soft hover:border-coral-200 hover:text-coral-500'
               }`}
             >
               {opt.label}
@@ -383,7 +382,7 @@ function FeaturedExplainer({ track, onWatch }: { track: TrackRow; onWatch: () =>
               type="button"
               aria-label="Play featured explainer"
               onClick={onWatch}
-              className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-indigo-500 shadow-lg transition-transform hover:scale-110"
+              className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-coral-500 shadow-lg transition-transform hover:scale-110"
             >
               <Play className="h-7 w-7 fill-indigo-500" />
             </button>
@@ -394,11 +393,11 @@ function FeaturedExplainer({ track, onWatch }: { track: TrackRow; onWatch: () =>
           </div>
 
           <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
-            <span className="chip w-fit border border-line bg-canvas-tint text-indigo-500">
+            <span className="chip w-fit border border-line bg-canvas-tint text-coral-500">
               <span className="h-1.5 w-1.5 rounded-full bg-coral-400" />
               {track.category_label}
             </span>
-            <h2 className="mt-4 text-2xl font-bold text-ink sm:text-3xl">{track.title}</h2>
+            <h2 className="mt-4 text-2xl font-bold sm:text-3xl">{track.title}</h2>
             <p className="mt-3 text-ink-soft">{track.description}</p>
 
             <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -410,7 +409,7 @@ function FeaturedExplainer({ track, onWatch }: { track: TrackRow; onWatch: () =>
             <div className="mt-6 flex flex-wrap gap-2">
               {track.suitable_for.map((tag) => (
                 <span key={tag} className="chip border border-line bg-white text-ink-soft">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-coral-400" />
                   {tag}
                 </span>
               ))}
@@ -439,7 +438,7 @@ function Metric({
   return (
     <div>
       <p className="flex items-center gap-1.5 text-xs font-medium text-ink-muted">
-        <Icon className="h-3.5 w-3.5 text-indigo-500" />
+        <Icon className="h-3.5 w-3.5 text-coral-500" />
         {label}
       </p>
       <p className="mt-1 text-sm font-bold text-ink">{value}</p>
@@ -463,7 +462,7 @@ function SkillGrid({
     <section className="py-4 sm:py-6">
       <div className="container-page">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-ink sm:text-3xl">{content.pageHeadings.library_all_heading}</h2>
+          <h2 className="text-2xl font-bold sm:text-3xl">{content.pageHeadings.library_all_heading}</h2>
         </div>
 
         {list.length === 0 ? (
@@ -487,7 +486,7 @@ function SkillGrid({
         {!hasFilters && (
           <p className="mt-8 text-center text-sm text-ink-muted">
             Can’t find a skill?{' '}
-            <Link to="/#assessment" className="font-semibold text-indigo-500 hover:text-coral-400">
+            <Link to="/#assessment" className="font-semibold text-coral-500 hover:text-coral-400">
               Take the assessment
             </Link>{' '}
             and we will suggest tracks that fit you.
@@ -516,18 +515,18 @@ function SkillCard({ track, onWatch }: { track: TrackRow; onWatch: (t: TrackRow)
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-base font-bold leading-snug text-ink">{track.title}</h3>
+        <h3 className="text-base font-bold leading-snug">{track.title}</h3>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-ink-soft">
           {track.description}
         </p>
 
         <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-ink-soft">
           <span className="inline-flex items-center gap-1.5">
-            <Wallet className="h-3.5 w-3.5 text-indigo-500" />
+            <Wallet className="h-3.5 w-3.5 text-coral-500" />
             {track.pay_range}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <Timer className="h-3.5 w-3.5 text-indigo-500" />
+            <Timer className="h-3.5 w-3.5 text-coral-500" />
             {track.time_to_income}
           </span>
         </div>
@@ -536,7 +535,7 @@ function SkillCard({ track, onWatch }: { track: TrackRow; onWatch: (t: TrackRow)
           {track.suitable_for.slice(0, 2).map((tag) => (
             <span
               key={tag}
-              className="rounded-md bg-canvas-tint px-2 py-0.5 text-[11px] font-medium text-indigo-500"
+              className="rounded-md bg-canvas-tint px-2 py-0.5 text-[11px] font-medium text-coral-500"
             >
               {tag}
             </span>
@@ -575,13 +574,13 @@ function MythBusting({
   return (
     <section className="py-16 sm:py-20">
       <div className="container-page">
-        <div className="rounded-2xl bg-indigo-50 p-6 sm:p-10">
+        <div className="rounded-2xl bg-coral-50 p-6 sm:p-10">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-md">
               <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
                 {content.pageHeadings.library_myths_eyebrow}
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">
+              <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
                 {content.pageHeadings.library_myths_heading}
               </h2>
               <p className="mt-3 text-sm text-ink-soft">
@@ -590,7 +589,7 @@ function MythBusting({
             </div>
 
             <div className="flex-1 lg:max-w-2xl">
-              <div className="rounded-xl border border-indigo-100 bg-white p-6">
+              <div className="rounded-xl border border-coral-200 bg-white p-6">
                 <p className="font-display text-lg font-bold text-ink line-through decoration-coral-300/70">
                   {myth.myth}
                 </p>
@@ -618,7 +617,7 @@ function MythBusting({
                       type="button"
                       aria-label="Previous myth"
                       onClick={() => go(-1)}
-                      className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-white text-ink-soft transition-colors hover:border-indigo-200 hover:text-indigo-500"
+                      className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-white text-ink-soft transition-colors hover:border-coral-200 hover:text-coral-500"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </button>
@@ -626,7 +625,7 @@ function MythBusting({
                       type="button"
                       aria-label="Next myth"
                       onClick={() => go(1)}
-                      className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-white text-ink-soft transition-colors hover:border-indigo-200 hover:text-indigo-500"
+                      className="grid h-9 w-9 place-items-center rounded-lg border border-line bg-white text-ink-soft transition-colors hover:border-coral-200 hover:text-coral-500"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </button>
@@ -647,7 +646,7 @@ function CtaBanner() {
     <section className="py-8 sm:py-12">
       <div className="container-page">
         <div className="flex flex-col items-center gap-5 rounded-2xl border border-coral-200 bg-coral-50 p-8 text-center sm:p-12">
-          <h2 className="max-w-xl text-balance text-2xl font-bold text-ink sm:text-3xl">
+          <h2 className="max-w-xl text-balance text-2xl font-bold sm:text-3xl">
             {content.pageHeadings.library_cta_heading}
           </h2>
           <p className="max-w-lg text-ink-soft">
@@ -679,13 +678,13 @@ function RelatedWebinars({
             <p className="text-sm font-semibold uppercase tracking-wider text-coral-400">
               {content.pageHeadings.library_webinars_eyebrow}
             </p>
-            <h2 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">
+            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
               {category === 'all' ? 'Upcoming webinars' : 'Webinars for this category'}
             </h2>
           </div>
           <Link
             to="/#webinars"
-            className="group inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-500 hover:text-coral-400"
+            className="group inline-flex items-center gap-1.5 text-sm font-semibold text-coral-500 hover:text-coral-400"
           >
             See all webinars
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -694,7 +693,7 @@ function RelatedWebinars({
 
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
           {list.map((wb) => (
-            <article key={wb.id} className="card flex flex-col p-5 hover:-translate-y-1 hover:border-indigo-200">
+            <article key={wb.id} className="card flex flex-col p-5 hover:-translate-y-1 hover:border-coral-200">
               <div className="flex items-center gap-4">
                 <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-indigo-500 text-white">
                   <span className="text-center leading-tight">
@@ -705,30 +704,30 @@ function RelatedWebinars({
                   </span>
                 </div>
                 <div className="min-w-0">
-                  <h3 className="truncate text-base font-bold text-ink">{wb.title}</h3>
+                  <h3 className="truncate text-base font-bold">{wb.title}</h3>
                   <p className="mt-0.5 text-xs text-ink-muted">{wb.speaker}</p>
                 </div>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-ink-soft">
                 <span className="inline-flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5 text-indigo-500" />
+                  <Clock className="h-3.5 w-3.5 text-coral-500" />
                   {wb.time}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Tag className="h-3.5 w-3.5 text-indigo-500" />
+                  <Tag className="h-3.5 w-3.5 text-coral-500" />
                   {wb.segment_tag}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <CalendarDays className="h-3.5 w-3.5 text-indigo-500" />
+                  <CalendarDays className="h-3.5 w-3.5 text-coral-500" />
                   Live on Zoom
                 </span>
               </div>
 
-              <a href={`#register-${wb.id}`} className="btn-primary mt-5 w-full text-sm">
+              <Link to="/#webinars" className="btn-primary mt-5 w-full text-sm">
                 Register free
                 <ArrowRight className="h-4 w-4" />
-              </a>
+              </Link>
             </article>
           ))}
         </div>

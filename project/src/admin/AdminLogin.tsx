@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+﻿import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Mail,
@@ -9,10 +9,11 @@ import {
   AlertCircle,
   ArrowRight,
 } from 'lucide-react';
-import { API_URL } from '@/lib/api';
+import { useAdminAuth } from '@/admin/AdminAuthContext';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const { login } = useAdminAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -25,17 +26,7 @@ export default function AdminLogin() {
     setError('');
 
     try {
-       const res = await fetch(`${API_URL}/admin/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || 'Incorrect email or password.');
-      }
-      localStorage.setItem('adminToken', data.token);
-      localStorage.setItem('adminEmail', data.email);
+      await login(email, password);
       navigate('/admin', { replace: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Login failed';
@@ -65,9 +56,9 @@ export default function AdminLogin() {
           </span>
         </div>
 
-        <div className="card p-7 shadow-[0_8px_40px_-12px_rgba(26,26,46,0.12)] sm:p-8">
+        <div className="card p-7 shadow-[0_8px_40px_-12px_rgba(10,14,63,0.12)] sm:p-8">
           <div className="mb-6 text-center">
-            <h1 className="text-2xl font-bold text-ink">Admin Login</h1>
+            <h1 className="text-2xl font-bold">Admin Login</h1>
             <p className="mt-1.5 text-sm text-ink-soft">
               Sign in to manage your site content.
             </p>
@@ -125,7 +116,7 @@ export default function AdminLogin() {
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted transition-colors hover:text-indigo-500"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted transition-colors hover:text-coral-500"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
